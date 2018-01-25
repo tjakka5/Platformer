@@ -7,7 +7,6 @@ function Fluid.init(settings)
    Fluid.component    = require(PATH..".component")
    Fluid.system       = require(PATH..".system")
    Fluid.instance     = require(PATH..".instance")
-   Fluid.event        = require(PATH..".event")
    Fluid.eventManager = require(PATH..".eventManager")
 
    if settings and settings.useEvents then
@@ -31,7 +30,7 @@ function Fluid.init(settings)
       	end
 
          for _, instance in ipairs(Fluid.instances) do
-            instance:emit(Fluid.event.load(arg))
+            instance:emit("load", arg)
          end
 
       	if love.timer then love.timer.step() end
@@ -42,17 +41,11 @@ function Fluid.init(settings)
       		if love.event then
       			love.event.pump()
       			for name, a, b, c, d, e, f in love.event.poll() do
-                  local event = Fluid.event[name](a, b, c, d, e, f)
+                  for _, instance in ipairs(Fluid.instances) do
+                     instance:emit(name, a, b, c, d, e, f)
+                  end
 
                   if name == "quit" then
-                     event.__satisfied = true
-                  end
-
-                  for _, instance in ipairs(Fluid.instances) do
-                     instance:emit(event)
-                  end
-
-                  if name == "quit" and event.__satisfied then
                      return a
                   end
       			end
@@ -64,11 +57,7 @@ function Fluid.init(settings)
       		end
 
             for _, instance in ipairs(Fluid.instances) do
-               instance:emit(Fluid.event.update(dt))
-            end
-
-            for _, instance in ipairs(Fluid.instances) do
-               instance.eventManager:process()
+               instance:emit("update", dt)
             end
 
       		if love.graphics and love.graphics.isActive() then
@@ -76,7 +65,7 @@ function Fluid.init(settings)
       			love.graphics.origin()
 
                for _, instance in ipairs(Fluid.instances) do
-                  instance:emit(Fluid.event.draw())
+                  instance:emit("draw")
                end
 
       			love.graphics.present()

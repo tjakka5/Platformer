@@ -17,14 +17,13 @@ function EventManager:push(event)
    return self
 end
 
-function EventManager:emit(event)
-   local listeners = self.listeners[event.__name]
+function EventManager:emit(name, ...)
+   local listeners = self.listeners[name]
 
    if listeners then
       for i = 1, #listeners do
          local listener = listeners[i]
-
-         listener[event.__name](listener, event)
+         listener[name](listener, ...)
       end
    end
 

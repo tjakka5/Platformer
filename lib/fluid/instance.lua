@@ -1,7 +1,6 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Pool         = require(PATH..".pool")
-local Event        = require(PATH..".event")
 local EventManager = require(PATH..".eventManager")
 
 local Instance = {}
@@ -64,20 +63,20 @@ function Instance:removeSystem(system)
    return self
 end
 
-function Instance:emit(event)
-   self.eventManager:emit(event)
+function Instance:emit(...)
+   self.eventManager:emit(...)
 
    return self
 end
 
 function Instance:update(dt)
-   self:emit(Event.update(dt))
+   self:emit("update", dt)
 
    return self
 end
 
 function Instance:draw()
-   self:emit(Event.draw())
+   self:emit("draw")
 
    return self
 end

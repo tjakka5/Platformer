@@ -78,7 +78,7 @@ function System:tryRemove()
 
       if self.__all[e] == 0 then
          self.__all[e] = nil
-         self:entityRemoved(e, removedFrom)
+         self:entityRemoved(e)
       end
    end
 end
@@ -88,12 +88,12 @@ function System:remove(e)
       for _, pool in ipairs(self.__pools) do
          if pool:has(e) then
             pool:remove(e)
-            self:entityRemovedFrom(e)
+            self:entityRemovedFrom(e, pool)
          end
       end
 
       self.__all[e] = nil
-      self:entityRemoved()
+      self:entityRemoved(e)
    end
 end
 
